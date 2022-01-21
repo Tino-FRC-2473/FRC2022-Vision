@@ -13,7 +13,8 @@ class ColorDetector:
             upper_bound = [20, 255, 255]
         else:
             return
-        self.image = cv2.imread(image_name)
+        self.image_name = image_name
+        self.image = cv2.imread(self.image_name)
         self.lower_bound = np.array(lower_bound)
         self.upper_bound = np.array(upper_bound)
             
@@ -27,10 +28,15 @@ class ColorDetector:
 
         # return output
 
-        cv2.imshow("Color Detected", np.hstack((self.image, output)))
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+        grayImage = cv2.cvtColor(output, cv2.COLOR_BGR2GRAY)
+
+        (thresh, blackAndWhiteImage) = cv2.threshold(grayImage, 0, 255, cv2.THRESH_BINARY)
+
+        # cv2.imshow("Color Detected", blackAndWhiteImage)
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()
+        cv2.imwrite("binary_" + self.image_name, blackAndWhiteImage)
 
 
-cd = ColorDetector("images/dis48_angle0.png", "blue")
+cd = ColorDetector("images/dis59_both_angle0.png", "blue")
 cd.detect()
