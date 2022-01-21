@@ -24,13 +24,13 @@ class ColorDetector:
         hsv = cv2.cvtColor(self.image, cv2.COLOR_BGR2HSV)
         
         mask = cv2.inRange(hsv, self.lower_bound, self.upper_bound)
-        output = cv2.bitwise_and(self.image,self.image, mask= mask)
+        output = cv2.bitwise_and(self.image, self.image, mask=mask)
 
         # return output
 
-        grayImage = cv2.cvtColor(output, cv2.COLOR_BGR2GRAY)
+        gray_image = cv2.cvtColor(output, cv2.COLOR_BGR2GRAY)
 
-        (thresh, blackAndWhiteImage) = cv2.threshold(grayImage, 0, 255, cv2.THRESH_BINARY)
+        (thresh, blackAndWhiteImage) = cv2.threshold(gray_image, 0, 255, cv2.THRESH_BINARY)
 
         # cv2.imshow("Color Detected", blackAndWhiteImage)
         # cv2.waitKey(0)
