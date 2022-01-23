@@ -48,7 +48,8 @@ Uses cv2 API
 
 Involves a collection of shell scripts to run on the Jetson. run2022vision.sh is in the FRC2020-Vision repository and other setup/preparation scripts are in Jetson-Setup.
 
-# Test Image Set
+# Testing
+## Test Image Set
 
 Set of videos and pictures from the robot camera perspective for CV testing/training
 
@@ -57,3 +58,7 @@ Set of videos and pictures from the robot camera perspective for CV testing/trai
 * Both ball colors
 * One ball, multiple balls, no balls
 * Images with bumpers/other colored field elements
+
+## Test Image Script
+
+Script to get images using OpenCV when a key on the keyboard is clicked. Will be used to collect test images.
