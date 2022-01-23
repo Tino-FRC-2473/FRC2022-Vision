@@ -8,4 +8,3 @@ output = detect.detect_ball()
 cv2.imshow('contours image', output)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
-

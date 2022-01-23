@@ -2,8 +2,8 @@ import cv2
 import numpy as np
 import imutils
 
-
 RADIUS_THRESH = 50
+
 
 class BallDetection:
 
