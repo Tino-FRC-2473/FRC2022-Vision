@@ -8,7 +8,7 @@ import cv2
 input = cv2.VideoCapture(0)
 
 print("ready to capture image")
-#create a window first to allow cv2.waitKey(0) to work
+# create a window first to allow cv2.waitKey(0) to work
 success, image = input.read()
 cv2.imshow("Saved Image", image)
 
