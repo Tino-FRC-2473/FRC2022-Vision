@@ -20,7 +20,7 @@ while True:
             if not success:
                 print("\nno frames have been grabbed, aborting process")
                 break
-            cv2.imwrite("distance_#_angle_#.jpg", image)
+            cv2.imwrite("lighting_color_distance_#_angle_#_background_elements_Y.jpg", image)
             cv2.imshow("Saved Image", image)
         # else if the 's' key is pressed (s for stop), stop waiting for images
         elif cv2.waitKey(0) == ord('s'):
@@ -36,5 +36,5 @@ while True:
 # close the camera
 input.release()
 print("camera closed")
-# destroy all the image windows shows by cv2.imshow() (line 18)
+# destroy all the image windows shows by cv2.imshow()
 cv2.destroyAllWindows()
