@@ -22,21 +22,20 @@ class ColorDetector:
 
         # Convert BGR to HSV
         hsv = cv2.cvtColor(self.image, cv2.COLOR_BGR2HSV)
-
         mask = cv2.inRange(hsv, self.lower_bound, self.upper_bound)
-        output = cv2.bitwise_and(self.image, self.image, mask=mask)
 
-        # return output
+        # return mask
 
-        gray_image = cv2.cvtColor(output, cv2.COLOR_BGR2GRAY)
+        self.show_image(mask)
 
-        (thresh, blackAndWhiteImage) = cv2.threshold(gray_image, 0, 255, cv2.THRESH_BINARY)
+        # cv2.imwrite("binary_" + self.image_name, mask)
 
-        # cv2.imshow("Color Detected", blackAndWhiteImage)
-        # cv2.waitKey(0)
-        # cv2.destroyAllWindows()
-        cv2.imwrite("binary_" + self.image_name, blackAndWhiteImage)
+    def show_image(self, image):
+        cv2.imshow("Color Detected", image)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
 
 
-cd = ColorDetector("images/dis59_both_angle0.png", "blue")
-cd.detect()
+if __name__ == '__main__':
+    cd = ColorDetector("images/dis48_angle0.png", "blue")
+    cd.detect()
