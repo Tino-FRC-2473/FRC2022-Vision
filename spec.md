@@ -7,46 +7,23 @@ Uses cv2 API
 * Field of View
 * Handle multiple cameras (processes)
 
-## ImageGenerator
-* Returns the image as an tuple (with the bgr values)
-
-### Methods
-* get_pixel_channel_values(image, x, y) - returns an tuple with channel values as respectice indices at the specified image pixel
-* get_pixel_channel(image, x, y, channel=0) - returns the channel value specified for the image pixel
-* get_image_channel(image, channel=0) - returns 2-dimensional tuple with channel values corresponding to the respective indices of the image
-* get_image_channel_values(image) - returns 3-dimensional tuple with channel values corresponding to the respective indices of the image
-
-## Video File Generator
-* Returns the image that the camera sees (as a 2D or 3D arr)
-* Captures video from a video file
-
-### Methods
-* get_next_frame(self) - returns the next frame from the video file
-* is_capturing(self) - returns the capturing variable
-
 ## Video Live Generator
 * Returns current image frame 
 * Captures video from the camera itself
-* Use Multiprocessing to treat each camera as a seperate stream of video input (if more than one camera is used)
-
-### Methods
-* get_next_frame(self) - returns the next frame from the video file
-* is_capturing(self) - returns the capturing variable (if the camera is currently recording)
 
 ## CameraData
-* Stores all the camera parameters (takes in a camera in constructor)
+* Stores all the camera parameters
 * Horizontal and Vertical FOV
 * Camera tilt angle
 * Screen Size 
 
-### Methods
-* get_horiz_FOV(self) - returns camera's horizontal field of view
-* get_vert_FOV(self): returns the camera's vertical field of view
-* get_camera_tilt(self): Returns the camera's tilt
+# Data Sender
+* Uses the video_live_generator.py file and camera_data.py file to gather images from the camera(s).
+* Use Multiprocessing to treat each camera as a seperate stream of video input (if more than one camera is used)
 
 # Jetson
 
-Involves a collection of shell scripts to run on the Jetson. run2022vision.sh is in the FRC2020-Vision repository and other setup/preparation scripts are in Jetson-Setup.
+Involves a collection of shell scripts to run on the Jetson. run2022vision.sh is in the FRC2022-Vision repository and other setup/preparation scripts are in Jetson-Setup.
 
 # Testing
 ## Test Image Set
@@ -62,3 +39,13 @@ Set of videos and pictures from the robot camera perspective for CV testing/trai
 ## Test Image Script
 
 Script to get images using OpenCV when a key on the keyboard is clicked. Will be used to collect test images.
+
+# API
+### From Camera Data
+* get_horiz_FOV(self) - returns camera's horizontal field of view
+* get_vert_FOV(self): returns the camera's vertical field of view
+* get_camera_tilt(self): Returns the camera's tilt
+
+### From Video Live Generator
+* get_next_frame(self) - returns the next frame from the video file
+* is_capturing(self) - returns the capturing variable (the capturing variable tells if the camera is currently recording)
