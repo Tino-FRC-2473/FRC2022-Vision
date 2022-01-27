@@ -3,27 +3,29 @@
 # competition
 
 import cv2
+from video_live_generator import VideoLiveGenerator
 
 # use the default camera
-input = cv2.VideoCapture(0)
+input = VideoLiveGenerator(0)
 
 print("ready to capture image")
 # create a window first to allow cv2.waitKey(0) to work
-success, image = input.read()
+image = input.get_next_frame()
 cv2.imshow("Saved Image", image)
 
 while True:
     try:
         # if the 't' key is pressed (t for take photo), then save the image gotten from the camera
-        if cv2.waitKey(0) == ord('t'):
-            success, image = input.read()
-            if not success:
+        key_pressed = cv2.waitKey(0)
+        if key_pressed == ord('t'):
+            image = input.get_next_frame()
+            if not input.is_capturing():
                 print("\nno frames have been grabbed, aborting process")
                 break
             cv2.imwrite("lighting_color_distance_#_angle_#_background_elements_Y.jpg", image)
             cv2.imshow("Saved Image", image)
         # else if the 's' key is pressed (s for stop), stop waiting for images
-        elif cv2.waitKey(0) == ord('s'):
+        elif key_pressed == ord('s'):
             print("\nquitting")
             break
         else:
@@ -34,7 +36,7 @@ while True:
         break
 
 # close the camera
-input.release()
+input.close_camera()
 print("camera closed")
 # destroy all the image windows shows by cv2.imshow()
 cv2.destroyAllWindows()

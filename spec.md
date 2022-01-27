@@ -7,11 +7,11 @@ Uses cv2 API
 * Field of View
 * Handle multiple cameras (processes)
 
-## Video Live Generator
+# Video Live Generator
 * Returns current image frame 
 * Captures video from the camera itself
 
-## CameraData
+# CameraData
 * Stores all the camera parameters
 * Horizontal and Vertical FOV
 * Camera tilt angle
@@ -49,3 +49,4 @@ Script to get images using OpenCV when a key on the keyboard is clicked. Will be
 ### From Video Live Generator
 * get_next_frame(self) - returns the next frame from the video file
 * is_capturing(self) - returns the capturing variable (the capturing variable tells if the camera is currently recording)
+* close_camera(self) - closes the camera

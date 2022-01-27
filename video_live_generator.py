@@ -18,3 +18,6 @@ class VideoLiveGenerator():
 
     def is_capturing(self):
         return self.capturing
+
+    def close_camera(self):
+        self.live_input.release()
