@@ -24,10 +24,9 @@ class ColorDetector:
         hsv = cv2.cvtColor(self.image, cv2.COLOR_BGR2HSV)
         mask = cv2.inRange(hsv, self.lower_bound, self.upper_bound)
 
-        # return mask
+        return mask
 
-        self.show_image(mask)
-
+        # self.show_image(mask)
         # cv2.imwrite("binary_" + self.image_name, mask)
 
     def show_image(self, image):
@@ -37,5 +36,5 @@ class ColorDetector:
 
 
 if __name__ == '__main__':
-    cd = ColorDetector("images/dis48_angle0.png", "blue")
+    cd = ColorDetector("/Users/akshatmehta/Downloads/images/dis48_angle0.png", "blue")
     cd.detect()
