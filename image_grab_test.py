@@ -6,7 +6,7 @@ import cv2
 from video_live_generator import VideoLiveGenerator
 
 # use the default camera
-input = VideoLiveGenerator(0)
+input = VideoLiveGenerator(2)
 
 print("ready to capture image")
 # create a window first to allow cv2.waitKey(0) to work
