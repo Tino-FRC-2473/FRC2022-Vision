@@ -1,40 +1,30 @@
 import cv2
-import numpy as np
+from numpy import array
 
 
 class ColorDetector:
 
-    def __init__(self, image_name, color):
+    BLUE_LOWER = array([70, 50, 50])
+    BLUE_UPPER = array([120, 255, 255])
+
+    RED_LOWER = array([120, 50, 50])
+    RED_UPPER = array([200, 255, 255])
+
+    def __init__(self, image):
+        self.image = image
+
+    def detect(self, color):
+
         if color == "blue":
-            lower_bound = [70, 50, 50]  # dis48_angle0.png
-            upper_bound = [120, 255, 255]
+            lower_bound = self.BLUE_LOWER
+            upper_bound = self.BLUE_UPPER
         elif color == "red":
-            lower_bound = [0, 25, 25]  # dis26_red_angle0.png
-            upper_bound = [20, 255, 255]
+            lower_bound = self.RED_LOWER
+            upper_bound = self.RED_UPPER
         else:
-            return
-        self.image_name = image_name
-        self.image = cv2.imread(self.image_name)
-        self.lower_bound = np.array(lower_bound)
-        self.upper_bound = np.array(upper_bound)
+            raise Exception('color must be "blue" or "red"')
 
-    def detect(self):
-
-        # Convert BGR to HSV
         hsv = cv2.cvtColor(self.image, cv2.COLOR_BGR2HSV)
-        mask = cv2.inRange(hsv, self.lower_bound, self.upper_bound)
+        mask = cv2.inRange(hsv, lower_bound, upper_bound)
 
         return mask
-
-        # self.show_image(mask)
-        # cv2.imwrite("binary_" + self.image_name, mask)
-
-    def show_image(self, image):
-        cv2.imshow("Color Detected", image)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
-
-
-if __name__ == '__main__':
-    cd = ColorDetector("/Users/akshatmehta/Downloads/images/dis48_angle0.png", "blue")
-    cd.detect()
