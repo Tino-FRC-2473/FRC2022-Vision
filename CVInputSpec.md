@@ -13,9 +13,9 @@ Uses cv2 API
 
 # CameraData
 * Stores all the camera parameters
-* Horizontal and Vertical FOV
+* Focal length
 * Camera tilt angle
-* Screen Size 
+* Ball radius
 
 # Data Sender
 * Uses the video_live_generator.py file and camera_data.py file to gather images from the camera(s).
@@ -41,11 +41,6 @@ Set of videos and pictures from the robot camera perspective for CV testing/trai
 Script to get images using OpenCV when a key on the keyboard is clicked. Will be used to collect test images.
 
 # API
-### From Camera Data
-* get_horiz_FOV(self) - returns camera's horizontal field of view
-* get_vert_FOV(self): returns the camera's vertical field of view
-* get_camera_tilt(self): Returns the camera's tilt
-
 ### From Video Live Generator
 * get_next_frame(self) - returns the next frame from the video file
 * is_capturing(self) - returns the capturing variable (the capturing variable tells if the camera is currently recording)
