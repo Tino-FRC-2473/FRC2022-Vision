@@ -2,8 +2,7 @@
 # add this shebang to run this shell script by the bash shell
 
 # change directory to where data_sender.py is located
-cd ./
-# /home/nvidia/FRC2022-Vision
+cd /home/nvidia/FRC2022-Vision
 
 # if the user does not have executable permissions for data_sender.py, give it to them
 if [[ ! -x "data_sender.py" ]]
