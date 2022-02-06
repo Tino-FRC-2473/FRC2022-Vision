@@ -1,13 +1,24 @@
 import cv2
+from os import listdir
+import numpy as np
 
-test = cv2.imread("binary (blue-50-0).jpg")
-correct = cv2.imread("accuracy (blue-50-0).jpg")
+path = "/Users/akshatmehta/Downloads/benchmark/"
+for i in listdir(path):
 
-matches = 0
+    test = cv2.imread(path + i)
+    print(i[:-16])
+    correct = cv2.imread("/Users/akshatmehta/Downloads/binary/" + i[:-16] + ".jpg")
 
-for i in range(len(test)):
-    for j in range(len(test[i])):
-        if test[i][j][0] == correct[i][j][0]:
-            matches += 1
+    matches = 0
 
-print(f"Accuracy: {matches / 2073600:%}")
+    for i in range(len(test)):
+        for j in range(len(test[i])):
+            if test[i][j][0] == correct[i][j][0]:
+                matches += 1
+
+    accuracy = matches / 2073600
+    print(f"Accuracy: {accuracy:%}")
+    if accuracy < 0.95:
+        cv2.imshow(f"Accuracy: {accuracy:%}", np.vstack((test, correct)))
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
