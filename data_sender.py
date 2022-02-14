@@ -1,4 +1,3 @@
-import cv2
 from multiprocessing import Process
 from video_live_generator import VideoLiveGenerator
 
