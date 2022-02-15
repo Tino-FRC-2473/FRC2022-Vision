@@ -1,19 +1,5 @@
-import cv2
-import math
-import random
-
-
-class CameraData:
-    def __init__(self, camera_tilt):
-        self.H_FIELD_OF_VIEW = 68.37
-        self.V_FIELD_OF_VIEW = 41.21
-        self.CAMERA_TILT = camera_tilt
-
-    def get_horiz_FOV(self):
-        return self.H_FIELD_OF_VIEW
-
-    def get_vert_FOV(self):
-        return self.V_FIELD_OF_VIEW
-
-    def get_camera_tilt(self):
-        return self.CAMERA_TILT
+KNOWN_DIAMETER_IN = 9.5  # in
+# ADJ_FOCAL_LENGTH = 1480.1
+FOCAL_LENGTH = 1367.043233  # 83.3% accuracy. Use 1645.101 -> 99.73% accuracy but overshoots
+RADIUS_THRESH = 85
+CAMERA_TILT_DOWNWARDS = 20

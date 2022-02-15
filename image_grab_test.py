@@ -5,7 +5,6 @@
 import cv2
 from video_live_generator import VideoLiveGenerator
 
-# use the default camera
 input = VideoLiveGenerator(2)
 
 print("ready to capture image")
@@ -28,8 +27,6 @@ while True:
         elif key_pressed == ord('s'):
             print("\nquitting")
             break
-        else:
-            print("nothing is happening")
     # handle the case when the program is interrupted (control + c)
     except KeyboardInterrupt:
         print("\ninterrupted")
