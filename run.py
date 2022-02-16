@@ -1,6 +1,6 @@
 from os import listdir
 import cv2
-from color_detector import ColorDetector
+from color_detector_yuv import ColorDetector
 import numpy as np
 
 blank = cv2.imread("blank.jpg")
@@ -24,13 +24,14 @@ def detect_and_save(file, color):
     original = cv2.imread(file)
     cd = ColorDetector(original)
     result = cd.detect(color)
-    cv2.imwrite(f"/Users/akshatmehta/Downloads/binary/{color}_{file[52:]}", result)
+    cv2.imwrite(f"/Users/akshatmehta/Downloads/binary_yuv/{color}_{file[52:]}", result)
 
 
 if __name__ == '__main__':
     path = "/Users/akshatmehta/Downloads/test_images_revision_2/"
     for img in listdir(path):
-        detect_and_show(path + img, "red")
-    for img in listdir(path):
-        detect_and_show(path + img, "blue")
-    # detect_and_show(path + "light_red_distance_50_angle_30_background_elements_N.jpg", "red")
+        if "red" in img or "both" in img:
+            detect_and_save(path + img, "red")
+    # for img in listdir(path):
+    #     detect_and_show(path + img, "blue")
+    # detect_and_show(path + "dark_blue_distance_24_angle_-30_background_elements_N.jpg", "blue")
