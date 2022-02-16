@@ -2,19 +2,23 @@ import cv2
 import pandas as pd
 import ball_detection as bd
 
-img = cv2.imread("test_images/blue_dark_blue_distance_24_angle_30_background_elements_N.jpg")
+img = cv2.imread("test_images/blue_light_blue_distance_50_angle_30_background_elements_N.jpg")
 detect = bd.BallDetection(img)
-output = detect.detect_ball()
-# resize image for better view
-scale_percent = 60  # percent of original size
-width = int(output.shape[1] * scale_percent / 100)
-height = int(output.shape[0] * scale_percent / 100)
-dim = (width, height)
-resized = cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
+dist, angle = detect.detect_ball()  # note: dist & angle are floats
 
-cv2.imshow('contours image', resized)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+if dist != -1 and angle != -1:
+    data = f"[{dist}, {angle}"
+    # encode the "data" variable and send over serial
+
+# DISPLAY IMAGE
+# scale_percent = 60  # percent of original size
+# width = int(output.shape[1] * scale_percent / 100)
+# height = int(output.shape[0] * scale_percent / 100)
+# dim = (width, height)
+# resized = cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
+# cv2.imshow('contours image', resized)
+# cv2.waitKey(0)
+# cv2.destroyAllWindows()
 
 # ACCURACY TEST
 
@@ -32,6 +36,7 @@ cv2.destroyAllWindows()
 #
 # for i in range(len(dist)):
 #     if pred_dist[i] != -1 and dist[i] != 0:
+#         print((pred_dist[i] - dist[i]))
 #         val = ((pred_dist[i] - dist[i])/dist[i]) * 100
 #         percents.append(val)
 #     else:

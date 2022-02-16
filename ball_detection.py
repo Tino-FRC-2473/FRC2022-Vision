@@ -4,8 +4,9 @@ import imutils
 
 KNOWN_DIAMETER_IN = 9.5  # in
 # ADJ_FOCAL_LENGTH = 1480.1
-FOCAL_LENGTH = 1367.043233  # 83.3% accuracy. Use 1645.101 -> 99.73% accuracy but overshoots
+FOCAL_LENGTH = 1367.043233  # 94% accuracy
 RADIUS_THRESH = 85
+MIN_BORDERS = 6
 
 
 class BallDetection:
@@ -17,6 +18,7 @@ class BallDetection:
 
     def detect_ball(self):
         distance = -1
+        angle = -1
         frame = cv2.cvtColor(self.frame, cv2.COLOR_BGR2GRAY)
         self.prep_frame()
         cnts = cv2.findContours(frame, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
@@ -29,12 +31,12 @@ class BallDetection:
                     # determine the num of border points on the contour (ex: differentiates between circle and rect)
                     perimeter = cv2.arcLength(cnt, closed=True)
                     borders = cv2.approxPolyDP(curve=cnt, epsilon=0.0085 * perimeter, closed=True)
-                    if len(borders) > 6:
+                    if len(borders) > MIN_BORDERS:
                         angle = self.find_angle(x, y)
                         # print(radius)
                         distance = self.find_distance(radius)
-                        cv2.circle(self.frame, (int(x), int(y)), int(radius), (0, 255, 0), 2)
-        return distance
+                    cv2.circle(self.frame, (int(x), int(y)), int(radius), (0, 255, 0), 2)
+        return distance, angle
 
     def transform(self, x, y):
         # transform coordinates to a system with the origin at the bottom-middle of screen
