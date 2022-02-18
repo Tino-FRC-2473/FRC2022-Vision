@@ -30,8 +30,8 @@ def detect_and_save(file, color):
 if __name__ == '__main__':
     path = "/Users/akshatmehta/Downloads/test_images_revision_2/"
     for img in listdir(path):
-        if "red" in img or "both" in img:
-            detect_and_save(path + img, "red")
+        if "blue" in img or "both" in img:
+            detect_and_show(path + img, "blue")
     # for img in listdir(path):
     #     detect_and_show(path + img, "blue")
     # detect_and_show(path + "dark_blue_distance_24_angle_-30_background_elements_N.jpg", "blue")
