@@ -4,6 +4,7 @@ import numpy as np
 
 accuracies = []
 ball_accuracies = []
+show_images = False
 
 path = "/Users/akshatmehta/Downloads/benchmark/"
 for file in listdir(path):
@@ -16,7 +17,8 @@ for file in listdir(path):
     else:
         continue
 
-    correct = cv2.imread(f"/Users/akshatmehta/Downloads/binary/{color}_{file[file.index('benchmark_') + len('benchmark_'):]}")
+    correct = cv2.imread(
+        f"/Users/akshatmehta/Downloads/binary/{color}_{file[file.index('benchmark_') + len('benchmark_'):]}")
 
     matches = 0
     ball_matches = 0
@@ -37,9 +39,10 @@ for file in listdir(path):
     ball_accuracies.append(ball_matches / ball_size)
     print(f"Total Accuracy: {accuracies[-1]:%}")
     print(f"Ball Accuracy: {ball_accuracies[-1]:%}\n")
-    # cv2.imshow(f"Accuracy: {accuracies[-1]:%}, Ball Accuracy: {ball_accuracies[-1]:%}", np.vstack((test, correct)))
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
+    if show_images:
+        cv2.imshow(f"Accuracy: {accuracies[-1]:%}, Ball Accuracy: {ball_accuracies[-1]:%}", np.vstack((test, correct)))
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
 
 print(accuracies)
 print(ball_accuracies)
