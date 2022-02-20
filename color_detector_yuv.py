@@ -7,8 +7,8 @@ class ColorDetector:
     RED_LOWER = array([0, 50, 140])
     RED_UPPER = array([200, 150, 255])
 
-    BLUE_LOWER = array([0, 130, 0])
-    BLUE_UPPER = array([130, 200, 200])
+    BLUE_LOWER = array([0, 0, 0])
+    BLUE_UPPER = array([255, 255, 110])
 
     def __init__(self, image):
         self.image = image
