@@ -1,4 +1,3 @@
-# from multiprocessing import Process
 import time
 import serial
 import struct
@@ -7,7 +6,7 @@ import color_detector
 from ball_detection import BallDetection
 
 
-driver_camera = VideoLiveGenerator(1)
+auto_camera = VideoLiveGenerator(1)
 # track the time to close the camera once the match is over
 start_time = time.time()
 
@@ -18,7 +17,7 @@ print(ser.name)
 
 # run the cv code for 150 seconds (15 for autonomous + 125 for TeleOp)
 while (time.time() - start_time) < 150:
-    next_img = driver_camera.get_next_frame()
+    next_img = auto_camera.get_next_frame()
     # get the binary image
     binary_image = color_detector.detect(next_img, "blue")
     # get the ball distance and angle from the robot
@@ -32,13 +31,4 @@ while (time.time() - start_time) < 150:
     ser.write(bytearray(struct.pack("ff", float(cv_info[0]), float(cv_info[1]))))
 
 # close the camera at the end of the time
-driver_camera.close_camera()
-
-
-# auto_camera = VideoLiveGenerator(2)
-
-# driver_station_feed = Process(target=driver_camera.get_next_frame(), name="driver station camera feed")
-# autonomous_feed = Process(target=auto_camera.get_next_frame(), name="autonomous camera feed")
-
-# driver_station_feed.start()
-# autonomous_feed.start()
+auto_camera.close_camera()
