@@ -1,7 +1,7 @@
 .DS_Store
 *~
 ._*
-
+.idea
 # Windows thumbnail cache files
 Thumbs.db
 Thumbs.db:encryptable
@@ -38,3 +38,4 @@ env.bak/
 venv.bak/
 
 Pipfile.lock
+/test_images/
