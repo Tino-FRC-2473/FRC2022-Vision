@@ -1,7 +1,7 @@
 
 from cv2 import cv2
 import numpy as np
-from color_detector import ColorDetector
+from color_detector_hsv import ColorDetector
 
 
 img_blue = cv2.imread('/Users/akshatmehta/Downloads/test_images_revision_2/dark_blue_distance_65_angle_-45_background_elements_N.jpg')

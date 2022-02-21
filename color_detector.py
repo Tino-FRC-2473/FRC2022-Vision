@@ -2,35 +2,26 @@ import cv2
 from numpy import array
 
 
-class ColorDetector:
+RED_LOWER = array([0, 50, 140])
+RED_UPPER = array([200, 150, 255])
 
-    BLUE_LOWER = array([70, 50, 50])
-    BLUE_UPPER = array([120, 255, 255])
+BLUE_LOWER = array([0, 0, 0])
+BLUE_UPPER = array([255, 255, 110])
 
-    RED_LOWER1 = array([0, 50, 50])
-    RED_UPPER1 = array([10, 255, 255])
 
-    RED_LOWER2 = array([170, 50, 50])
-    RED_UPPER2 = array([180, 255, 255])
+def detect(image, color, return_all=False):
 
-    def __init__(self, image):
-        self.image = image
+    blurred = cv2.blur(image, (15, 15))
+    yuv = cv2.cvtColor(blurred, cv2.COLOR_BGR2YUV)
 
-    def detect(self, color, return_all=False):
+    if color == "blue":
+        mask = cv2.inRange(yuv, BLUE_LOWER, BLUE_UPPER)
+    elif color == "red":
+        mask = cv2.inRange(yuv, RED_LOWER, RED_UPPER)
+    else:
+        raise Exception('color must be "blue" or "red"')
 
-        blurred = cv2.blur(self.image, (15, 15))
-        hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
-
-        if color == "blue":
-            mask = cv2.inRange(hsv, self.BLUE_LOWER, self.BLUE_UPPER)
-        elif color == "red":
-            mask1 = cv2.inRange(hsv, self.RED_LOWER1, self.RED_UPPER1)
-            mask2 = cv2.inRange(hsv, self.RED_LOWER2, self.RED_UPPER2)
-            mask = cv2.bitwise_or(mask1, mask2)
-        else:
-            raise Exception('color must be "blue" or "red"')
-
-        if return_all:
-            return blurred, hsv, mask
-        else:
-            return mask
+    if return_all:
+        return blurred, yuv, mask
+    else:
+        return mask
