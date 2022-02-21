@@ -12,28 +12,6 @@ CAMERA_TILT_DOWNWARDS = 20
 
 
 # CV Input Code
-def set_up_camera(camera_port):
-    camera_path = "/dev/video" + str(camera_port)
-
-    # set the width and height property of the image
-    live_input.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
-    live_input.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
-
-    # use subprocess to set camera settings
-    try:
-        subprocess.check_call(["v4l2-ctl", "-d", camera_path, "-c", "white_balance_temperature_auto=0"])
-        subprocess.check_call(["v4l2-ctl", "-d", camera_path, "-c", "white_balance_temperature=5400"])
-        subprocess.check_call(["v4l2-ctl", "-d", camera_path, "-c", "exposure_auto=1"])
-        subprocess.check_call(["v4l2-ctl", "-d", camera_path, "-c", "exposure_absolute=5"])
-        print(subprocess.check_output(["v4l2-ctl", "-d", camera_path, "-C", "exposure_absolute"]))
-        print("Camera setup complete")
-    except CalledProcessError as cpe:
-        print("Called Process Error occurred. Camera setup incomplete!")
-        print("Error status:" + str(cpe.returncode))
-    except FileNotFoundError:
-        print("v4l2 not found. Camera setup incomplete!")
-
-
 def draw_image_annotations(image, angle, distance):
     # PLEASE MAKE SURE THAT THIS IMAGE IS PASSED BY REFERENCE (IF '=' IS USED, RETURN THE IMAGE INSTEAD)
     cv2.putText(image, f"Angle: {angle} deg.", (875, 100), 0, 1.5, (0, 255, 0), 3)
@@ -126,8 +104,6 @@ class BallDetection:
 
 # runPipeline() is called every frame by Limelight's backend.
 def runPipeline(image, llrobot):
-    set_up_camera(1)
-
     binary_image = detect(image, "blue")
 
     ball_detect = BallDetection(binary_image)
@@ -139,4 +115,4 @@ def runPipeline(image, llrobot):
     llpython = [float(distance), float(angle)]
 
     # return the modified image, and custom robot data
-    return image, llpython
+    return None, image, llpython
