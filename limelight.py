@@ -59,10 +59,7 @@ def grab_contours(cnts):
     # otherwise OpenCV has changed their cv2.findContours return
     # signature yet again and I have no idea WTH is going on
     else:
-        raise Exception(("Contours tuple must have length 2 or 3, "
-            "otherwise OpenCV changed their cv2.findContours return "
-            "signature yet again. Refer to OpenCV's documentation "
-            "in that case"))
+        raise Exception(("Contours tuple must have length 2 or 3, otherwise OpenCV changed their cv2.findContours return signature yet again. Refer to OpenCV's documentation in that case"))
 
     # return the actual contours array
     return cnts
@@ -138,8 +135,8 @@ def runPipeline(image, llrobot):
 
     # record the distance and angle of the ball to the robot to send back to the robot
     llpython = [float(distance), float(angle)]
-   
-    # print(f"distance: {distance}, angle: {angle}")
+
+    print(f"distance: {distance}, angle: {angle}")
 
     # return the largest countour, modified image, and custom robot data
     return [], image, llpython
