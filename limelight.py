@@ -12,8 +12,8 @@ CAMERA_TILT_DOWNWARDS = 20
 
 # CV Input Code
 def draw_image_annotations(image, angle, distance):
-    cv2.putText(image, f"Angle: {angle} deg.", (875, 100), 0, 1.0, (255, 0, 255), 3)
-    cv2.putText(image, f"Distance: {distance} in.", (875, 200), 0, 1.0, (255, 0, 255), 3)
+    cv2.putText(image, f"Angle: {angle} deg.", (145, 20), 0, 0.65, (255, 0, 255), 2)
+    cv2.putText(image, f"Distance: {distance} in.", (140, 50), 0, 0.65, (255, 0, 255), 2)
 
 
 # CV Color Detection Code
@@ -121,7 +121,7 @@ class BallDetection:
 
 # runPipeline() is called every frame by Limelight's backend.
 def runPipeline(image, llrobot):
-    binary_image = detect(image, "blue")
+    binary_image = detect(image, "red")
 
     ball_detect = BallDetection(binary_image)
     distance, angle = ball_detect.detect_ball()
