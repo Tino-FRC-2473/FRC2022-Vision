@@ -3,6 +3,7 @@ import struct
 from video_live_generator import VideoLiveGenerator
 import color_detector
 from ball_detection import BallDetection
+from Encoding import Encoding
 
 
 auto_camera = VideoLiveGenerator(1)
@@ -10,6 +11,9 @@ auto_camera = VideoLiveGenerator(1)
 # open the serial port
 ser = serial.Serial('/dev/')
 print(ser.name)
+
+# create the encoding object to use to pass data via the serial port
+encoding_input = Encoding()
 
 # run ball detection indefinitely
 while True:
@@ -19,9 +23,5 @@ while True:
     # get the ball distance and angle from the robot
     ball_detector = BallDetection(next_img)
     cv_info = ball_detector.detect_ball()
-    print(f"cv_info is: {cv_info}")
-    # send the data via the serial port (distance, angle)
-    # pack two float types (format 'f', put two of them for 2 arguments)
-    # typecast to bytearray for compatability with serial write() method
-    print(bytearray(struct.pack("ff", float(cv_info[0]), float(cv_info[1]))))
-    ser.write(bytearray(struct.pack("ff", float(cv_info[0]), float(cv_info[1]))))
+    ball_info = [float(cv_info[0]), float(cv_info[1])]
+    encoding_input.send_data(ball_info, ser)
