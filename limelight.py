@@ -35,10 +35,6 @@ def detect(image, color):
         mask = cv2.inRange(yuv, RED_LOWER, RED_UPPER)
     else:
         raise Exception('color must be "blue" or "red"')
-
-    blank = np.full((len(mask), len(mask[0]), 3), 255)
-    mask = cv2.bitwise_and(blank, blank, mask=mask)
-
     return mask
 
 
@@ -75,8 +71,7 @@ class BallDetection:
     def detect_ball(self):
         distance = -1
         angle = -1
-        frame_1 = cv2.cvtColor(self.frame, cv2.COLOR_YUV2RGB)
-        frame = cv2.cvtColor(frame_1, cv2.COLOR_RGB2GRAY)
+        frame = self.frame
         self.prep_frame()
         cnts = cv2.findContours(frame, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
         cnts = grab_contours(cnts)
