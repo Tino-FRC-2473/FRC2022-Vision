@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-import imutils
 
 # Camera Constants
 KNOWN_DIAMETER_IN = 9.5  # in
@@ -13,37 +12,62 @@ CAMERA_TILT_DOWNWARDS = 20
 
 # CV Input Code
 def draw_image_annotations(image, angle, distance):
-    # PLEASE MAKE SURE THAT THIS IMAGE IS PASSED BY REFERENCE (IF '=' IS USED, RETURN THE IMAGE INSTEAD)
-    cv2.putText(image, f"Angle: {angle} deg.", (875, 100), 0, 1.5, (0, 255, 0), 3)
-    cv2.putText(image, f"Distance: {distance} in.", (875, 200), 0, 1.5, (0, 255, 0), 3)
-    cv2.arrowedLine(image, (650, 700), (int(650 + distance * 10.77 * math.cos(math.radians(90 - angle))), int(700 - distance * 10.77 * math.sin(math.radians(90 - angle)))), (0, 255, 255), 2, 8, 0, 0.1)
+    cv2.putText(image, f"Angle: {angle} deg.", (875, 100), 0, 1.0, (255, 0, 255), 3)
+    cv2.putText(image, f"Distance: {distance} in.", (875, 200), 0, 1.0, (255, 0, 255), 3)
 
 
 # CV Color Detection Code
-BLUE_LOWER = np.array([70, 50, 50])
-BLUE_UPPER = np.array([120, 255, 255])
+RED_LOWER = np.array([0, 50, 140])
+RED_UPPER = np.array([200, 150, 255])
 
-RED_LOWER = np.array([120, 50, 50])
-RED_UPPER = np.array([200, 255, 255])
+BLUE_LOWER = np.array([0, 0, 0])
+BLUE_UPPER = np.array([255, 255, 110])
 
 
 def detect(image, color):
+
+    blurred = cv2.blur(image, (15, 15))
+    yuv = cv2.cvtColor(blurred, cv2.COLOR_BGR2YUV)
+
     if color == "blue":
-        lower_bound = BLUE_LOWER
-        upper_bound = BLUE_UPPER
+        mask = cv2.inRange(yuv, BLUE_LOWER, BLUE_UPPER)
     elif color == "red":
-        lower_bound = RED_LOWER
-        upper_bound = RED_UPPER
+        mask = cv2.inRange(yuv, RED_LOWER, RED_UPPER)
     else:
         raise Exception('color must be "blue" or "red"')
 
-    hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-    mask = cv2.inRange(hsv, lower_bound, upper_bound)
+    blank = np.full((len(mask), len(mask[0]), 3), 255)
+    mask = cv2.bitwise_and(blank, blank, mask=mask)
 
     return mask
 
 
 # CV Ball Detection Code
+# from imutils github page
+def grab_contours(cnts):
+    # if the length the contours tuple returned by cv2.findContours
+    # is '2' then we are using either OpenCV v2.4, v4-beta, or
+    # v4-official
+    if len(cnts) == 2:
+        cnts = cnts[0]
+
+    # if the length of the contours tuple is '3' then we are using
+    # either OpenCV v3, v4-pre, or v4-alpha
+    elif len(cnts) == 3:
+        cnts = cnts[1]
+
+    # otherwise OpenCV has changed their cv2.findContours return
+    # signature yet again and I have no idea WTH is going on
+    else:
+        raise Exception(("Contours tuple must have length 2 or 3, "
+            "otherwise OpenCV changed their cv2.findContours return "
+            "signature yet again. Refer to OpenCV's documentation "
+            "in that case"))
+
+    # return the actual contours array
+    return cnts
+
+
 class BallDetection:
 
     def __init__(self, frame):
@@ -54,10 +78,11 @@ class BallDetection:
     def detect_ball(self):
         distance = -1
         angle = -1
-        frame = cv2.cvtColor(self.frame, cv2.COLOR_BGR2GRAY)
+        frame_1 = cv2.cvtColor(self.frame, cv2.COLOR_YUV2RGB)
+        frame = cv2.cvtColor(frame_1, cv2.COLOR_RGB2GRAY)
         self.prep_frame()
         cnts = cv2.findContours(frame, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-        cnts = imutils.grab_contours(cnts)
+        cnts = grab_contours(cnts)
 
         if len(cnts) > 0:
             for cnt in cnts:
@@ -113,6 +138,8 @@ def runPipeline(image, llrobot):
 
     # record the distance and angle of the ball to the robot to send back to the robot
     llpython = [float(distance), float(angle)]
+   
+    # print(f"distance: {distance}, angle: {angle}")
 
-    # return the modified image, and custom robot data
-    return None, image, llpython
+    # return the largest countour, modified image, and custom robot data
+    return [], image, llpython
