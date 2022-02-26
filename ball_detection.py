@@ -1,12 +1,14 @@
 import cv2
 import numpy as np
 import imutils
+import math
 
 KNOWN_DIAMETER_IN = 9.5  # in
-# ADJ_FOCAL_LENGTH = 1480.1
 FOCAL_LENGTH = 1367.043233  # 94% accuracy
 RADIUS_THRESH = 85
-MIN_BORDERS = 6
+MIN_BORDERS = 5
+FOV = 78
+DIM = 1920
 
 
 class BallDetection:
@@ -18,6 +20,7 @@ class BallDetection:
 
     def detect_ball(self):
         distance = -1
+        area = -1
         angle = -1
         frame = cv2.cvtColor(self.frame, cv2.COLOR_BGR2GRAY)
         self.prep_frame()
@@ -28,37 +31,29 @@ class BallDetection:
             for cnt in cnts:
                 ((x, y), radius) = cv2.minEnclosingCircle(cnt)
                 if radius >= RADIUS_THRESH:
-                    # determine the num of border points on the contour (ex: differentiates between circle and rect)
                     perimeter = cv2.arcLength(cnt, closed=True)
                     borders = cv2.approxPolyDP(curve=cnt, epsilon=0.0085 * perimeter, closed=True)
-                    if len(borders) > MIN_BORDERS:
-                        angle = self.find_angle(x, y)
-                        # print(radius)
-                        distance = self.find_distance(radius)
-                    cv2.circle(self.frame, (int(x), int(y)), int(radius), (0, 255, 0), 2)
-        return distance, angle
-
-    def transform(self, x, y):
-        # transform coordinates to a system with the origin at the bottom-middle of screen
-        dims = self.frame.shape
-        x = x - (dims[1] / 2)
-        y = dims[0] - y
-        return x, y
+                    if len(borders) >= MIN_BORDERS:
+                        if cv2.contourArea(cnt) > area:  # finding the closest ball
+                            area = cv2.contourArea(cnt)
+                            distance = self.find_distance(area)
+                            angle = self.find_angle(x, y)
+                        cv2.circle(self.frame, (int(x), int(y)), int(radius), (0, 255, 0), 2)
+        return [distance, angle]
 
     def find_angle(self, x, y):
-        tsfm_x, tsfm_y = self.transform(x, y)
-        angle_rad = np.arctan(abs(tsfm_x) / tsfm_y)
-        angle_deg = round(np.degrees(angle_rad), 2)
-
+        center = DIM/2
+        diff = center - x
+        angle = math.degrees(math.atan(diff/FOCAL_LENGTH))
         # angle annotations
-        cv2.putText(self.frame, "Angle: " + str(angle_deg) + " degrees", (50, 30), cv2.FONT_HERSHEY_SIMPLEX, 1,
+        cv2.putText(self.frame, "Angle: " + str(angle) + " degrees", (50, 30), cv2.FONT_HERSHEY_SIMPLEX, 1,
                     (200, 200, 0), 1)
-        cv2.line(self.frame, (int(self.x_val / 2), self.y_val), (int(x), int(y)), (0, 0, 255), 2)
-        return angle_deg
+        return angle
 
-    def find_distance(self, radius):
-        dist = (KNOWN_DIAMETER_IN * FOCAL_LENGTH) / (radius * 2)
-        # print("Distance: " + str(dist))
+    def find_distance(self, area):
+        # DIST USING CONTOUR AREA
+        # square root
+        dist = 34437*(area**-0.593)
         return dist
 
     def prep_frame(self):

@@ -2,10 +2,11 @@ import cv2
 import pandas as pd
 import ball_detection as bd
 
-img = cv2.imread("test_images/blue_light_blue_distance_50_angle_30_background_elements_N.jpg")
+img = cv2.imread("test_images/red_dark_red_distance_24_angle_30_background_elements_N.jpg")
 detect = bd.BallDetection(img)
-dist, angle = detect.detect_ball()  # note: dist & angle are floats
+data = detect.detect_ball()  # format: [dist, angle] dist & angle are floats
+print(data)
 
-if dist != -1 and angle != -1:
-    data = f"[{dist}, {angle}"
+if data[0] and data[1]:
+    data = f"[{data[0]}, {data[1]}"
     # encode the "data" variable and send over serial
