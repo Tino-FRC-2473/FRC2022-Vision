@@ -3,7 +3,7 @@ import struct
 from video_live_generator import VideoLiveGenerator
 import color_detector
 from ball_detection import BallDetection
-from Encoding import Encoding
+from encoding import Encoding
 
 
 auto_camera = VideoLiveGenerator(1)
