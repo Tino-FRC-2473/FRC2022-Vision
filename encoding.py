@@ -15,7 +15,7 @@ class Encoding:
         # ball = bd.BallDetection(img)
 
     def send_data(self, ball_data, s):   # ball_data: array from cv, s: serial port opened by cv
-        data_string = "".join("\n{:.2f}\n{:.2f}\n".format(round(ball_data[0], 2), round(ball_data[1], 2)))
+        data_string = "".join("\nD{:.2f}\nA{:.2f}\n".format(round(ball_data[0], 2), round(ball_data[1], 2)))
         # ball_data[0] = distance, #ball_data[1] = angle
         # one line break: new value (angle), two line breaks: end of data
         print("X " + data_string + "E")  # testing code
