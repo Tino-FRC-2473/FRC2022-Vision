@@ -1,7 +1,7 @@
 
 from cv2 import cv2
 import numpy as np
-from color_detector_hsv import ColorDetector
+from color_detector_hsv import ColorDetectorHSV
 
 
 img_blue = cv2.imread('/Users/akshatmehta/Downloads/test_images_revision_2/dark_blue_distance_65_angle_-45_background_elements_N.jpg')
@@ -21,7 +21,7 @@ mask = cv2.inRange(YUV_img, RED_LOWER, RED_UPPER)
 
 blank = cv2.imread("blank.jpg")
 mask = cv2.bitwise_and(blank, blank, mask=mask)
-hsv = ColorDetector(img_red).detect("red")
+hsv = ColorDetectorHSV(img_red).detect("red")
 hsv = cv2.bitwise_and(blank, blank, mask=hsv)
 cv2.imshow('YUV img', np.hstack((np.vstack((img_red, YUV_img)), np.vstack((hsv, mask)))))
 cv2.waitKey(0)

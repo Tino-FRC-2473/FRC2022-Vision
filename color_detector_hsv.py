@@ -2,7 +2,7 @@ import cv2
 from numpy import array
 
 
-class ColorDetector:
+class ColorDetectorHSV:
 
     BLUE_LOWER = array([70, 50, 50])
     BLUE_UPPER = array([120, 255, 255])
