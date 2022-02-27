@@ -1,4 +1,4 @@
-from os import listdir
+from pathlib import Path
 import cv2
 from color_detector import detect
 import numpy as np
@@ -28,9 +28,9 @@ def detect_and_save(file, color):
 
 
 if __name__ == '__main__':
-    for img in listdir(path):
+    for img in Path(path).glob("**/*"):
+        img = str(img)
         if "blue" in img or "both" in img:
-            detect_and_show(path + img, "blue")
-    # for img in listdir(path):
-    #     detect_and_show(path + img, "blue")
-    # detect_and_show(path + "dark_blue_distance_24_angle_-30_background_elements_N.jpg", "blue")
+            detect_and_show(img, "blue")
+        if "red" in img or "both" in img:
+            detect_and_show(img, "red")

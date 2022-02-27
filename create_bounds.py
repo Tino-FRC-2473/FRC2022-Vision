@@ -1,12 +1,13 @@
 import cv2
-from os import listdir
+from pathlib import Path
 import statistics
 
 path = "/Users/akshatmehta/Downloads/benchmark/"
 Y = []
 U = []
 V = []
-for file in listdir(path):
+for file in Path(path).glob('**/*'):
+    file = str(file)
     if "blue" not in file:
         continue
     test = cv2.imread(path + file)
