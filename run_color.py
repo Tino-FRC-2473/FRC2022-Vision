@@ -3,7 +3,7 @@ import cv2
 from color_detector import detect
 import numpy as np
 
-blank = cv2.imread("blank.jpg")
+blank = np.full((1080, 1920, 3), 255, dtype=np.uint8)
 path = "/Users/akshatmehta/Downloads/test_images_revision_2/"
 
 

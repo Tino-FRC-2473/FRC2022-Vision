@@ -19,7 +19,7 @@ RED_UPPER = np.array([200, 150, 255])
 
 mask = cv2.inRange(YUV_img, RED_LOWER, RED_UPPER)
 
-blank = cv2.imread("blank.jpg")
+blank = np.full((1080, 1920, 3), 255, dtype=np.uint8)
 mask = cv2.bitwise_and(blank, blank, mask=mask)
 hsv = ColorDetectorHSV(img_red).detect("red")
 hsv = cv2.bitwise_and(blank, blank, mask=hsv)
