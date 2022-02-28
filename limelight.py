@@ -123,7 +123,7 @@ class BallDetection:
 def runPipeline(image, llrobot):
     # get the alliance color from the network table (first word from the given key value)
     alliance_color = NetworkTables.getTable("limelight").getNumber('Auto Mode selected').split(', ', 1)[0]
-    
+
     binary_image = detect(image, alliance_color)
 
     ball_detect = BallDetection(binary_image)
