@@ -1,5 +1,4 @@
 import serial
-import struct
 from video_live_generator import VideoLiveGenerator
 import color_detector
 from ball_detection import BallDetection
