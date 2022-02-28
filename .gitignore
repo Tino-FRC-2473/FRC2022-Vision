@@ -1,7 +1,7 @@
 .DS_Store
 *~
 ._*
-.idea
+.idea/
 # Windows thumbnail cache files
 Thumbs.db
 Thumbs.db:encryptable
