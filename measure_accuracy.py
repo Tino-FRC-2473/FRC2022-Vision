@@ -1,12 +1,15 @@
 import cv2
 from os import listdir
 import numpy as np
+import argparse
 
 accuracies = []
 ball_accuracies = []
 show_images = False
 
-path = "/Users/akshatmehta/Downloads/benchmark/"
+parser = argparse.ArgumentParser()
+parser.add_argument("path")
+path = parser.parse_args().path
 for file in listdir(path):
 
     test = cv2.imread(path + file)

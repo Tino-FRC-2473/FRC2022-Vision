@@ -2,9 +2,13 @@ from pathlib import Path
 import cv2
 from color_detector import detect
 import numpy as np
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("path")
+path = parser.parse_args().path
 
 blank = np.full((1080, 1920, 3), 255, dtype=np.uint8)
-path = "/Users/akshatmehta/Downloads/test_images_revision_2/"
 
 
 def show_image(title, image):

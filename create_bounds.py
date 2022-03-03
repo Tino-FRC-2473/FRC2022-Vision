@@ -1,8 +1,11 @@
 import cv2
 from pathlib import Path
 import statistics
+import argparse
 
-path = "/Users/akshatmehta/Downloads/benchmark/"
+parser = argparse.ArgumentParser()
+parser.add_argument("path")
+path = parser.parse_args().path
 Y = []
 U = []
 V = []
