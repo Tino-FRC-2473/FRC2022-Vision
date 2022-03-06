@@ -1,30 +1,29 @@
 import cv2
-from numpy import array
+import numpy as np
 
 
-class ColorDetector:
+RED_LOWER = np.array([0, 50, 140])
+RED_UPPER = np.array([200, 150, 255])
 
-    BLUE_LOWER = array([70, 50, 50])
-    BLUE_UPPER = array([120, 255, 255])
+BLUE_LOWER = np.array([70, 50, 50])
+BLUE_UPPER = np.array([120, 255, 255])
 
-    RED_LOWER = array([120, 50, 50])
-    RED_UPPER = array([200, 255, 255])
 
-    def __init__(self, image):
-        self.image = image
+def detect(image, color, return_all=False):
 
-    def detect(self, color):
+    blurred = cv2.blur(image, (15, 15))
 
-        if color == "blue":
-            lower_bound = self.BLUE_LOWER
-            upper_bound = self.BLUE_UPPER
-        elif color == "red":
-            lower_bound = self.RED_LOWER
-            upper_bound = self.RED_UPPER
-        else:
-            raise Exception('color must be "blue" or "red"')
+    if color == "blue":
+        hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
+        mask = cv2.inRange(hsv, BLUE_LOWER, BLUE_UPPER)
+        yuv = hsv
+    elif color == "red":
+        yuv = cv2.cvtColor(blurred, cv2.COLOR_BGR2YUV)
+        mask = cv2.inRange(yuv, RED_LOWER, RED_UPPER)
+    else:
+        raise Exception('color must be "blue" or "red"')
 
-        hsv = cv2.cvtColor(self.image, cv2.COLOR_BGR2HSV)
-        mask = cv2.inRange(hsv, lower_bound, upper_bound)
-
+    if return_all:
+        return blurred, yuv, mask
+    else:
         return mask
