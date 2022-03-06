@@ -92,8 +92,8 @@ class BallDetection:
             for cnt in cnts:
                 ((x, y), radius) = cv2.minEnclosingCircle(cnt)
                 if radius >= RADIUS_THRESH:
-                    #print(radius)
-                    if cv2.contourArea(cnt) > area: # finding the closest ball
+                    # print(radius)
+                    if cv2.contourArea(cnt) > area:  # finding the closest ball
                         area = cv2.contourArea(cnt)
                         distance = self.find_distance(area)
                         angle = self.find_angle(x, y)
@@ -113,7 +113,7 @@ class BallDetection:
         # DIST USING CONTOUR AREA
         if B*area - H < 0:
             return -1
-        
+
         dist = A*((B*area - H)**(1/2)) + K
         return dist
 
@@ -121,10 +121,12 @@ class BallDetection:
         # draw axes on screen for visualization
         cv2.line(self.frame, (int(self.x_val / 2), self.y_val), (int(self.x_val / 2), 0), (0, 0, 255), 2)
         cv2.line(self.frame, (0, self.y_val), (self.x_val, self.y_val), (0, 0, 255), 3)
+
+
 # runPipeline() is called every frame by Limelight's backend.
 def runPipeline(image, llrobot):
     alliance_color = "Red" if llrobot[0] == 0 else "Blue"
-    
+
     binary_image = detect(image, "Red")
 
     ball_detect = BallDetection(binary_image)
@@ -133,10 +135,10 @@ def runPipeline(image, llrobot):
     # draw image annotations, round to 2 decimal places for distance and
     # angle values
     draw_image_annotations(image, round(data[1], 2), round(data[0], 2))
-    
+
     # record the distance and angle of the ball to the robot to send back to the robot
     llpython = [float(data[0]), float(data[1])]
-    #print(f"distance: {data[0]}, angle: {data[1]}")
+    # print(f"distance: {data[0]}, angle: {data[1]}")
 
     # return the largest countour, modified image, and custom robot data - add llpython
     return [], image, llpython
