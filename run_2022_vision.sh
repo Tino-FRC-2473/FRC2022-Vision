@@ -1,9 +1,9 @@
 #!bin/bash
 # add the shebang above to run this shell script by the bash shell
 
-#create the cv log file to log code actions
+# create the cv log file to log code actions
 cvlogfile="cv_log_$(date +"%m-%d-%Y_%H-%M-%S").txt"
-#create the cv error file to log code errors
+# create the cv error file to log code errors
 cverrorfile="cv_error_$(date +"%m-%d-%Y_%H-%M-%S").txt"
 
 whoami > $cvlogfile
@@ -24,5 +24,5 @@ fi
 echo "data_sender.py has been started" >> $cvlogfile
 
 # run the data_sender.py file
-#append outputs (default, so '1' not specified) to "cvlogfile", and redirect errors ('2') to "cverrorfile"
+# append outputs (default, so '1' not specified) to "cvlogfile", and redirect errors ('2') to "cverrorfile"
 sudo python3 data_sender.py >> $cvlogfile 2> $cverrorfile

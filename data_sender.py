@@ -1,11 +1,26 @@
-from multiprocessing import Process
+import serial
 from video_live_generator import VideoLiveGenerator
+import color_detector
+from ball_detection import BallDetection
+from encoding import Encoding
 
-driver_camera = VideoLiveGenerator(1)
-auto_camera = VideoLiveGenerator(2)
 
-driver_station_feed = Process(target=driver_camera.get_next_frame(), name="driver station camera feed")
-autonomous_feed = Process(target=auto_camera.get_next_frame(), name="autonomous camera feed")
+auto_camera = VideoLiveGenerator(1)
 
-driver_station_feed.start()
-autonomous_feed.start()
+# open the serial port
+ser = serial.Serial('/dev/')
+print(ser.name)
+
+# create the encoding object to use to pass data via the serial port
+encoding_input = Encoding()
+
+# run ball detection indefinitely
+while True:
+    next_img = auto_camera.get_next_frame()
+    # get the binary image
+    binary_image = color_detector.detect(next_img, "blue")
+    # get the ball distance and angle from the robot
+    ball_detector = BallDetection(next_img)
+    cv_info = ball_detector.detect_ball()
+    ball_info = [float(cv_info[0]), float(cv_info[1])]
+    encoding_input.send_data(ball_info, ser)
