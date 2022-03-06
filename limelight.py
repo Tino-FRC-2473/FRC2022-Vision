@@ -3,38 +3,48 @@ import numpy as np
 
 # Camera Constants
 KNOWN_DIAMETER_IN = 9.5  # in
-# ADJ_FOCAL_LENGTH = 1480.1
-FOCAL_LENGTH = 1367.043233  # 83.3% accuracy. Use 1645.101 -> 99.73% accuracy but overshoots
-RADIUS_THRESH = 85
-MIN_BORDERS = 6
+FOCAL_LENGTH = 195.669  # 94% accuracy
+RADIUS_THRESH = 18
+MIN_BORDERS = 5
+DIM = 320
 CAMERA_TILT_DOWNWARDS = 20
+
+# DISTANCE EQUATION
+# Square Root
+A = -1.6549
+B = 0.216359
+H = 184.484
+K = 62.9699
 
 
 # CV Input Code
 def draw_image_annotations(image, angle, distance):
-    cv2.putText(image, f"Angle: {angle} deg.", (145, 20), 0, 0.65, (255, 0, 255), 2)
-    cv2.putText(image, f"Distance: {distance} in.", (140, 50), 0, 0.65, (255, 0, 255), 2)
+    cv2.putText(image, f"Angle: {angle} deg.", (120, 20), 0, 0.65, (255, 0, 255), 2)
+    cv2.putText(image, f"Distance: {distance} in.", (120, 50), 0, 0.65, (255, 0, 255), 2)
 
 
 # CV Color Detection Code
 RED_LOWER = np.array([0, 50, 140])
 RED_UPPER = np.array([200, 150, 255])
 
-BLUE_LOWER = np.array([0, 0, 0])
-BLUE_UPPER = np.array([255, 255, 110])
+# BLUE_LOWER = np.array([0, 0, 0]) # YUV
+# BLUE_UPPER = np.array([255, 255, 95])
+BLUE_LOWER = np.array([70, 50, 50])
+BLUE_UPPER = np.array([120, 255, 255])
 
 
 def detect(image, color):
 
     blurred = cv2.blur(image, (15, 15))
-    yuv = cv2.cvtColor(blurred, cv2.COLOR_BGR2YUV)
 
-    if color == "blue":
-        mask = cv2.inRange(yuv, BLUE_LOWER, BLUE_UPPER)
-    elif color == "red":
+    if color == "Blue":
+        hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
+        mask = cv2.inRange(hsv, BLUE_LOWER, BLUE_UPPER)
+    elif color == "Red":
+        yuv = cv2.cvtColor(blurred, cv2.COLOR_BGR2YUV)
         mask = cv2.inRange(yuv, RED_LOWER, RED_UPPER)
     else:
-        raise Exception('color must be "blue" or "red"')
+        raise Exception('color must be "Blue" or "Red"')
     return mask
 
 
@@ -70,7 +80,9 @@ class BallDetection:
 
     def detect_ball(self):
         distance = -1
+        area = -1
         angle = -1
+        # frame = cv2.cvtColor(self.frame, cv2.COLOR_BGR2GRAY)
         frame = self.frame
         self.prep_frame()
         cnts = cv2.findContours(frame, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
@@ -80,61 +92,51 @@ class BallDetection:
             for cnt in cnts:
                 ((x, y), radius) = cv2.minEnclosingCircle(cnt)
                 if radius >= RADIUS_THRESH:
-                    # determine the num of border points on the contour (ex: differentiates between circle and rect)
-                    perimeter = cv2.arcLength(cnt, closed=True)
-                    borders = cv2.approxPolyDP(curve=cnt, epsilon=0.0085 * perimeter, closed=True)
-                    if len(borders) > MIN_BORDERS:
+                    #print(radius)
+                    if cv2.contourArea(cnt) > area: # finding the closest ball
+                        area = cv2.contourArea(cnt)
+                        distance = self.find_distance(area)
                         angle = self.find_angle(x, y)
-                        # print(radius)
-                        distance = self.find_distance(radius)
                     cv2.circle(self.frame, (int(x), int(y)), int(radius), (0, 255, 0), 2)
-        return distance, angle
-
-    def transform(self, x, y):
-        # transform coordinates to a system with the origin at the bottom-middle of screen
-        dims = self.frame.shape
-        x = x - (dims[1] / 2)
-        y = dims[0] - y
-        return x, y
+        return [distance, angle]
 
     def find_angle(self, x, y):
-        tsfm_x, tsfm_y = self.transform(x, y)
-        angle_rad = np.arctan(abs(tsfm_x) / tsfm_y)
-        angle_deg = round(np.degrees(angle_rad), 2)
-
+        center = DIM/2
+        diff = center - x
+        angle = np.degrees(np.arctan(diff/FOCAL_LENGTH))
         # angle annotations
-        cv2.putText(self.frame, "Angle: " + str(angle_deg) + " degrees", (50, 30), cv2.FONT_HERSHEY_SIMPLEX, 1,
+        cv2.putText(self.frame, "Angle: " + str(angle) + " degrees", (50, 30), cv2.FONT_HERSHEY_SIMPLEX, 1,
                     (200, 200, 0), 1)
-        cv2.line(self.frame, (int(self.x_val / 2), self.y_val), (int(x), int(y)), (0, 0, 255), 2)
-        return angle_deg
+        return angle
 
-    def find_distance(self, radius):
-        dist = (KNOWN_DIAMETER_IN * FOCAL_LENGTH) / (radius * 2)
-        # print("Distance: " + str(dist))
+    def find_distance(self, area):
+        # DIST USING CONTOUR AREA
+        if B*area - H < 0:
+            return -1
+        
+        dist = A*((B*area - H)**(1/2)) + K
         return dist
 
     def prep_frame(self):
         # draw axes on screen for visualization
         cv2.line(self.frame, (int(self.x_val / 2), self.y_val), (int(self.x_val / 2), 0), (0, 0, 255), 2)
         cv2.line(self.frame, (0, self.y_val), (self.x_val, self.y_val), (0, 0, 255), 3)
-
-
 # runPipeline() is called every frame by Limelight's backend.
 def runPipeline(image, llrobot):
-    # get the alliance color from the network table (first word from the given key value)
-    alliance_color = NetworkTables.getTable("limelight").getNumber('Auto Mode selected').split(', ', 1)[0]
-
-    binary_image = detect(image, alliance_color)
+    alliance_color = "Red" if llrobot[0] == 0 else "Blue"
+    
+    binary_image = detect(image, "Red")
 
     ball_detect = BallDetection(binary_image)
-    distance, angle = ball_detect.detect_ball()
+    data = ball_detect.detect_ball()
 
-    draw_image_annotations(image, angle, distance)
-
+    # draw image annotations, round to 2 decimal places for distance and
+    # angle values
+    draw_image_annotations(image, round(data[1], 2), round(data[0], 2))
+    
     # record the distance and angle of the ball to the robot to send back to the robot
-    llpython = [float(distance), float(angle)]
+    llpython = [float(data[0]), float(data[1])]
+    #print(f"distance: {data[0]}, angle: {data[1]}")
 
-    print(f"distance: {distance}, angle: {angle}")
-
-    # return the largest countour, modified image, and custom robot data
+    # return the largest countour, modified image, and custom robot data - add llpython
     return [], image, llpython
